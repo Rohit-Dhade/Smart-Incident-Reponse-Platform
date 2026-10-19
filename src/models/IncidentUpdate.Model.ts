@@ -17,6 +17,8 @@ export interface IIncidentUpdate extends Document {
     targetUserId?: mongoose.Types.ObjectId;
     fromStatus?: IncidentStatus;
     toStatus?: IncidentStatus;
+    createdAt: Date;
+    updatedAt: Date;
 }
 
 const IncidentUpdateSchema = new mongoose.Schema<IIncidentUpdate>(

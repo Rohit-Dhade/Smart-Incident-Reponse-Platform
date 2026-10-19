@@ -3,6 +3,8 @@ import { createIncident } from "../services/CreateIncident.ts";
 import { getIncidents, getIncidentById } from "../services/GetIncidents.ts";
 import { assignResponder, unassignResponder } from "../services/IncidentAssignment.ts";
 import { postIncidentNote } from "../services/PostIncidentNote.ts";
+import { emitToOrg } from "../realtime/socket.ts";
+import { changeIncidentStatus } from "../services/ChangeIncidentStatus.ts";
 
 export async function createIncidentHandler(req: Request, res: Response) {
     const incident = await createIncident({
@@ -14,7 +16,23 @@ export async function createIncidentHandler(req: Request, res: Response) {
         userId: req.user!.id,
     });
 
+    emitToOrg(req.user!.organizationId, "incident:created", incident);
+
     return res.status(201).json({ success: true, data: incident });
+}
+
+export async function updateIncidentStatus(req: Request, res: Response) {
+    const incident = await changeIncidentStatus({
+        incidentId: req.params.id as string,
+        newStatus: req.body.status,
+        organizationId: req.user!.organizationId,
+        userId: req.user!.id,
+        note: req.body.note,
+    });
+
+    emitToOrg(req.user!.organizationId, "incident:updated", incident);
+
+    return res.status(200).json({ success: true, data: incident });
 }
 
 export async function getIncidentsHandler(req: Request, res: Response) {
@@ -34,6 +52,9 @@ export async function assignHandler(req: Request, res: Response) {
         organizationId: req.user!.organizationId,
         actorId: req.user!.id,
     });
+
+    emitToOrg(req.user!.organizationId, "incident:updated", incident);
+
     return res.status(200).json({ success: true, data: incident });
 }
 
@@ -44,6 +65,9 @@ export async function unassignHandler(req: Request, res: Response) {
         organizationId: req.user!.organizationId,
         actorId: req.user!.id,
     });
+
+    emitToOrg(req.user!.organizationId, "incident:updated", incident);
+
     return res.status(200).json({ success: true, data: incident });
 }
 
@@ -55,5 +79,8 @@ export async function postNoteHandler(req: Request, res: Response) {
         organizationId: req.user!.organizationId,
         authorId: req.user!.id,
     });
+
+    emitToOrg(req.user!.organizationId, "incident:updated", update);
+
     return res.status(201).json({ success: true, data: update });
 }

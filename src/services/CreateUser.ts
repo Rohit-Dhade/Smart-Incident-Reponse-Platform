@@ -1,4 +1,4 @@
-import { UserModel, type IUser } from "../models/UserModel.ts";
+import { UserModel, type IUser } from "../models/User.Model.ts";
 import { ApiError } from "./ApiError.ts";
 import type { ClientSession } from "mongoose";
 

@@ -1,5 +1,5 @@
 import type { ClientSession } from "mongoose"
-import { OrganizationModel } from "../models/Organization.ts";
+import { OrganizationModel } from "../models/Organization.Model.ts";
 import { ApiError } from "./ApiError.ts";
 import { makeSlug } from "./makeSlug.ts";
 

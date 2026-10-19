@@ -5,7 +5,7 @@ import type { Request, Response, NextFunction } from "express";
 import { CreateOrganization } from "../services/CreateOrganization.ts";
 import { ApiError } from "../services/ApiError.ts";
 import jwt from "jsonwebtoken";
-import type { IUser } from "../models/UserModel.ts";
+import type { IUser } from "../models/User.Model.ts";
 
 export async function register(req: Request, res: Response, next: NextFunction) {
     const { organizationName, name, email, password } = req.body;

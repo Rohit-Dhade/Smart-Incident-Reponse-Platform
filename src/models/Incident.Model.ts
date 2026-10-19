@@ -11,6 +11,8 @@ export interface IIncident extends Document {
     assignedTo: mongoose.Types.ObjectId[];
     resolvedAt?: Date;
     createdBy: mongoose.Types.ObjectId;
+    createdAt: Date;
+    updatedAt: Date;
 }
 
 const IncidentSchema = new mongoose.Schema<IIncident>({

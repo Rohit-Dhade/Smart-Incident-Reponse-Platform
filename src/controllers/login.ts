@@ -1,5 +1,5 @@
 import type { Request, Response, NextFunction } from "express";
-import { UserModel } from "../models/UserModel.ts";
+import { UserModel } from "../models/User.Model.ts";
 import { ApiError } from "../services/ApiError.ts";
 import bcrypt from "bcryptjs"
 import jwt from "jsonwebtoken"

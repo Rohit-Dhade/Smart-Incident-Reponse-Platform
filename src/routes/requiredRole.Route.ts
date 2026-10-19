@@ -4,7 +4,7 @@ import { requireRole } from "../middleware/requireRole.ts";
 
 const requiredRoleRouter = Router();
 
-requiredRoleRouter.get("/test-admin", authMiddleware, requireRole(["viewer"]), (req, res) => {
+requiredRoleRouter.get("/test-admin", authMiddleware, requireRole(["admin"]), (req, res) => {
     res.json({ message: "You are an admin" });
 });
 

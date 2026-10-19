@@ -1,12 +1,11 @@
 import { Router } from "express";
-import { updateIncidentStatus } from "../controllers/UpdateIncidentStatus.ts";
 import { changeStatusValidator } from "../validation/incidentStatusValidator.ts";
 import { authMiddleware } from "../middleware/AuthMiddleware.ts";
 import { requireRole } from "../middleware/requireRole.ts";
 import { createIncidentHandler } from "../controllers/Incident.controller.ts";
 import { createIncidentValidator } from "../validation/Incident.validator.ts";
 import type { Role } from "../types/role.ts";
-import { getIncidentsHandler, getIncidentByIdHandler } from "../controllers/Incident.controller.ts";
+import { getIncidentsHandler, getIncidentByIdHandler, updateIncidentStatus } from "../controllers/Incident.controller.ts";
 import { assignHandler, unassignHandler, postNoteHandler } from "../controllers/Incident.controller.ts";
 import { assignValidator, postNoteValidator } from "../validation/Incident.validator.ts";
 
@@ -21,6 +20,5 @@ IncidentRouter.get("/get-incident/:id", authMiddleware, canView, getIncidentById
 IncidentRouter.post("/:id/assign", authMiddleware, canRespond, assignValidator, assignHandler);
 IncidentRouter.delete("/:id/assign/:userId", authMiddleware, canRespond, unassignHandler);
 IncidentRouter.post("/:id/updates", authMiddleware, canRespond, postNoteValidator, postNoteHandler);
-
 
 export default IncidentRouter;
