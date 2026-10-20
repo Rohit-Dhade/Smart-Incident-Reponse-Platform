@@ -3,17 +3,19 @@ import { ServiceModel } from "../models/Service.Model.ts";
 import { IncidentModel } from "../models/Incident.Model.ts";
 import { IncidentUpdateModel } from "../models/IncidentUpdate.Model.ts";
 import { ApiError } from "./ApiError.ts";
+import mongoose from "mongoose";
 
 const RECENT_DAYS = 7;
 
-export async function getPublicStatus(slug: string) {
-    const organization = await OrganizationModel.findOne({ slug: slug.toLowerCase() })
+export type PublicOrg = { _id: mongoose.Types.ObjectId; name: string; slug: string };
+
+export async function findPublicOrg(slug: string): Promise<PublicOrg | null> {
+    return OrganizationModel.findOne({ slug: slug.toLowerCase() })
         .select("name slug")
         .lean();
+}
 
-    if (!organization) {
-        throw new ApiError(404, "Status page not found");
-    }
+export async function buildPublicStatus(organization: PublicOrg) {
 
     const organizationId = organization._id;
     const since = new Date(Date.now() - RECENT_DAYS * 24 * 60 * 60 * 1000);
@@ -78,4 +80,12 @@ export async function getPublicStatus(slug: string) {
         services: services.map((s) => ({ name: s.name, status: s.currentStatus })),
         incidents,
     };
+}
+
+export async function getPublicStatus(slug: string) {
+    const organization = await findPublicOrg(slug);
+    if (!organization) {
+        throw new ApiError(404, "Status page not found");
+    }
+    return buildPublicStatus(organization);
 }
