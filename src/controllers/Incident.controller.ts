@@ -5,6 +5,7 @@ import { assignResponder, unassignResponder } from "../services/IncidentAssignme
 import { postIncidentNote } from "../services/PostIncidentNote.ts";
 import { emitToOrg } from "../realtime/socket.ts";
 import { changeIncidentStatus } from "../services/ChangeIncidentStatus.ts";
+import { broadcastPublicStatus } from "../realtime/socket.ts";
 
 export async function createIncidentHandler(req: Request, res: Response) {
     const incident = await createIncident({
@@ -17,6 +18,7 @@ export async function createIncidentHandler(req: Request, res: Response) {
     });
 
     emitToOrg(req.user!.organizationId, "incident:created", incident);
+    broadcastPublicStatus(req.user!.organizationId);
 
     return res.status(201).json({ success: true, data: incident });
 }
@@ -31,6 +33,7 @@ export async function updateIncidentStatus(req: Request, res: Response) {
     });
 
     emitToOrg(req.user!.organizationId, "incident:updated", incident);
+    broadcastPublicStatus(req.user!.organizationId);
 
     return res.status(200).json({ success: true, data: incident });
 }
@@ -81,6 +84,9 @@ export async function postNoteHandler(req: Request, res: Response) {
     });
 
     emitToOrg(req.user!.organizationId, "incident:updated", update);
+    if (update.visibility === "public") {
+        broadcastPublicStatus(req.user!.organizationId);
+    }
 
     return res.status(201).json({ success: true, data: update });
 }

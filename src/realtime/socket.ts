@@ -78,3 +78,30 @@ export function initSocket(httpServer: HttpServer): Server {
 export function emitToOrg(organizationId: string, event: string, payload: unknown) {
     io?.to(orgRoom(String(organizationId))).emit(event, payload);
 }
+
+const pendingBroadcasts = new Map<string, NodeJS.Timeout>();
+
+export function broadcastPublicStatus(organizationId: string) {
+    if (!io) return;
+    const key = String(organizationId);
+    if (pendingBroadcasts.has(key)) return;
+
+    pendingBroadcasts.set(
+        key,
+        setTimeout(async () => {
+            pendingBroadcasts.delete(key);
+            try {
+                const room = io?.of("/public").adapter.rooms.get(publicRoom(key));
+                if (!room || room.size === 0) return; // nobody watching, skip the database work
+
+                const org = await OrganizationModel.findById(key).select("name slug").lean();
+                if (!org) return;
+
+                const snapshot = await buildPublicStatus(org);
+                io?.of("/public").to(publicRoom(key)).emit("status:snapshot", snapshot);
+            } catch (err) {
+                console.error("Public broadcast failed:", err);
+            }
+        }, 500)
+    );
+}
