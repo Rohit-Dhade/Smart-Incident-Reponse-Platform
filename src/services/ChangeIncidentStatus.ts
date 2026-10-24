@@ -32,7 +32,7 @@ export async function changeIncidentStatus({
         await session.withTransaction(async () => {
             const incident = await IncidentModel.findOne({
                 _id: incidentId,
-                organizationId,
+                organizationId
             }).session(session);
 
             if (!incident) {

@@ -3,7 +3,7 @@ import { UserModel } from "../models/User.Model.ts";
 import { ApiError } from "../services/ApiError.ts";
 import bcrypt from "bcryptjs"
 import jwt from "jsonwebtoken"
-import { MemberShipModel } from "../models/MembershipModel.ts";
+import { MemberShipModel } from "../models/Membership.Model.ts";
 
 export async function login(req: Request, res: Response, next: NextFunction) {
     const { email, password } = req.body;

@@ -7,7 +7,7 @@ import type { Role } from "../types/role.ts";
 
 const ServiceRouter = Router();
 
-ServiceRouter.post("/create-service", authMiddleware, requireRole(["admin"] as Role[]), createServiceValidator, createServiceHandler);
-ServiceRouter.get("/list-services", authMiddleware, listServicesHandler);
+ServiceRouter.post("/", authMiddleware, requireRole(["admin"] as Role[]), createServiceValidator, createServiceHandler);
+ServiceRouter.get("/", authMiddleware, listServicesHandler);
 
 export default ServiceRouter;   

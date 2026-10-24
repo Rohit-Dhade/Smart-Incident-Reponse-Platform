@@ -17,7 +17,7 @@ export async function getIncidentById(incidentId: string, organizationId: string
     if (!mongoose.isValidObjectId(incidentId)) {
         throw new ApiError(404, "Incident not found");
     }
-    const incident = await IncidentModel.findById({ _id: incidentId, organizationId });
+    const incident = await IncidentModel.findOne({ _id: incidentId, organizationId });
     if (!incident) {
         throw new ApiError(404, "Incident not found");
     }

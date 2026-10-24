@@ -1,5 +1,5 @@
 import type { ClientSession } from "mongoose"
-import { MemberShipModel } from "../models/MembershipModel.ts";
+import { MemberShipModel } from "../models/Membership.Model.ts";
 import { ApiError } from "./ApiError.ts";
 import mongoose from "mongoose"
 import type { Role } from "../types/role.ts";

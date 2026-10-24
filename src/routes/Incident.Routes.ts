@@ -17,10 +17,10 @@ const canRespond = requireRole(["admin", "responder"] as Role[]);
 const canView = requireRole(["admin", "responder", "viewer"] as Role[]);
 const draftLimiter = rateLimit({ windowMs: 60 * 1000, limit: 5, standardHeaders: true, legacyHeaders: false });
 
-IncidentRouter.post("/updateIncidentStatus/:id", authMiddleware, canRespond, changeStatusValidator, updateIncidentStatus);
-IncidentRouter.post("/create-incident", authMiddleware, canRespond, createIncidentValidator, createIncidentHandler);
+IncidentRouter.post("/", authMiddleware, canRespond, createIncidentValidator, createIncidentHandler);
 IncidentRouter.get("/", authMiddleware, canView, getIncidentsHandler);
-IncidentRouter.get("/get-incident/:id", authMiddleware, canView, getIncidentByIdHandler);
+IncidentRouter.get("/:id", authMiddleware, canView, getIncidentByIdHandler);
+IncidentRouter.patch("/:id/status", authMiddleware, canRespond, changeStatusValidator, updateIncidentStatus);
 IncidentRouter.post("/:id/assign", authMiddleware, canRespond, assignValidator, assignHandler);
 IncidentRouter.delete("/:id/assign/:userId", authMiddleware, canRespond, unassignHandler);
 IncidentRouter.post("/:id/updates", authMiddleware, canRespond, postNoteValidator, postNoteHandler);

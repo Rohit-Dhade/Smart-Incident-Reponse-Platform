@@ -1,7 +1,7 @@
 import mongoose, { type HydratedDocument } from "mongoose";
 import { IncidentModel, type IIncident } from "../models/Incident.Model.ts";
 import { IncidentUpdateModel } from "../models/IncidentUpdate.Model.ts";
-import { MemberShipModel } from "../models/MembershipModel.ts";
+import { MemberShipModel } from "../models/Membership.Model.ts";
 import { UserModel } from "../models/User.Model.ts";
 import { ApiError } from "./ApiError.ts";
 import type { Role } from "../types/role.ts";
