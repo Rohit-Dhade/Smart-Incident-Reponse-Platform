@@ -313,6 +313,15 @@
 }
 
 @media (max-height: 620px) {
+  .auth-shell--register .auth-main__content {
+    padding-block: 4px;
+  }
+
+  .auth-shell--register .auth-form .form-stack {
+    margin-top: 8px;
+    gap: 9px;
+  }
+
   .auth-shell--register .auth-main__footer {
     display: none;
   }
