@@ -15,7 +15,9 @@ import { editPostmortemValidator } from "../validation/Postmortem.validator.ts";
 const IncidentRouter = Router();
 const canRespond = requireRole(["admin", "responder"] as Role[]);
 const canView = requireRole(["admin", "responder", "viewer"] as Role[]);
-const draftLimiter = rateLimit({ windowMs: 60 * 1000, limit: 5, standardHeaders: true, legacyHeaders: false });
+const draftLimiter = process.env.NODE_ENV === "test"
+    ? (_req: any, _res: any, next: any) => next()
+    : rateLimit({ windowMs: 60 * 1000, limit: 5, standardHeaders: true, legacyHeaders: false });
 
 IncidentRouter.post("/", authMiddleware, canRespond, createIncidentValidator, createIncidentHandler);
 IncidentRouter.get("/", authMiddleware, canView, getIncidentsHandler);
