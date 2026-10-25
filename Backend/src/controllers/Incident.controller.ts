@@ -1,6 +1,7 @@
 import type { Request, Response } from "express";
 import { createIncident } from "../services/CreateIncident.ts";
 import { getIncidents, getIncidentById } from "../services/GetIncidents.ts";
+import { getIncidentUpdates } from "../services/GetIncidentUpdates.ts";
 import { assignResponder, unassignResponder } from "../services/IncidentAssignment.ts";
 import { postIncidentNote } from "../services/PostIncidentNote.ts";
 import { emitToOrg } from "../realtime/socket.ts";
@@ -46,6 +47,14 @@ export async function getIncidentsHandler(req: Request, res: Response) {
 export async function getIncidentByIdHandler(req: Request, res: Response) {
     const incident = await getIncidentById(req.params.id as string, req.user!.organizationId as string);
     return res.status(200).json({ success: true, data: incident });
+}
+
+export async function getIncidentUpdatesHandler(req: Request, res: Response) {
+    const updates = await getIncidentUpdates(
+        req.params.id as string,
+        req.user!.organizationId as string
+    );
+    return res.status(200).json({ success: true, data: updates });
 }
 
 export async function assignHandler(req: Request, res: Response) {

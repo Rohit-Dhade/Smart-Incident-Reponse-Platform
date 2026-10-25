@@ -6,7 +6,7 @@ import { requireRole } from "../middleware/requireRole.ts";
 import { createIncidentHandler } from "../controllers/Incident.controller.ts";
 import { createIncidentValidator } from "../validation/Incident.validator.ts";
 import type { Role } from "../types/role.ts";
-import { getIncidentsHandler, getIncidentByIdHandler, updateIncidentStatus } from "../controllers/Incident.controller.ts";
+import { getIncidentsHandler, getIncidentByIdHandler, getIncidentUpdatesHandler, updateIncidentStatus } from "../controllers/Incident.controller.ts";
 import { assignHandler, unassignHandler, postNoteHandler } from "../controllers/Incident.controller.ts";
 import { assignValidator, postNoteValidator } from "../validation/Incident.validator.ts";
 import { draftHandler, getHandler, editHandler, publishHandler } from "../controllers/Postmortem.controller.ts";
@@ -22,6 +22,7 @@ const draftLimiter = process.env.NODE_ENV === "test"
 IncidentRouter.post("/", authMiddleware, canRespond, createIncidentValidator, createIncidentHandler);
 IncidentRouter.get("/", authMiddleware, canView, getIncidentsHandler);
 IncidentRouter.get("/:id", authMiddleware, canView, getIncidentByIdHandler);
+IncidentRouter.get("/:id/updates", authMiddleware, canView, getIncidentUpdatesHandler);
 IncidentRouter.patch("/:id/status", authMiddleware, canRespond, changeStatusValidator, updateIncidentStatus);
 IncidentRouter.post("/:id/assign", authMiddleware, canRespond, assignValidator, assignHandler);
 IncidentRouter.delete("/:id/assign/:userId", authMiddleware, canRespond, unassignHandler);

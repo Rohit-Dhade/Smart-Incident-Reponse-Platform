@@ -80,11 +80,11 @@ export async function generatePostmortemSections(
     let raw: string;
 
     try {
-        const response = await client.messages.create({
+        const response = await client.chat.complete({
             model,
-            max_tokens: 1500,
-            system: SYSTEM_PROMPT,
+            maxTokens: 1500,
             messages: [
+                { role: "system", content: SYSTEM_PROMPT },
                 {
                     role: "user",
                     content: `<incident_data>\n${incidentData}\n</incident_data>`,
@@ -92,11 +92,16 @@ export async function generatePostmortemSections(
             ],
         });
 
-        const block = response.content.find(
-            (b: { type: string }) => b.type === "text"
-        ) as { type: "text"; text: string } | undefined;
-
-        raw = block?.text ?? "";
+        const content = response.choices[0]?.message?.content;
+        raw = typeof content === "string"
+            ? content
+            : Array.isArray(content)
+                ? content
+                    .map((part: { type?: string; text?: string }) =>
+                        part.type === "text" ? part.text ?? "" : ""
+                    )
+                    .join("")
+                : "";
 
         if (!raw) {
             throw new Error("Mistral returned an empty response");
