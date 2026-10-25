@@ -74,6 +74,48 @@ describe("viewer: can look, cannot touch", () => {
     });
 });
 
+describe("assignee directory", () => {
+    it("lists only assignable members and reflects assignments", async () => {
+        const before = await request(app)
+            .get(`${API.incidents}/${incidentId}/assignees`)
+            .set("Cookie", admin.cookie);
+
+        expect(before.status).toBe(200);
+        expect(before.body.data.canAssign).toBe(true);
+        expect(before.body.data.assigned).toHaveLength(0);
+        expect(before.body.data.available.map((member: any) => member.id)).toEqual(
+            expect.arrayContaining([admin.userId, responder.userId])
+        );
+        expect(before.body.data.available.map((member: any) => member.id)).not.toContain(
+            viewer.userId
+        );
+
+        await request(app)
+            .post(`${API.incidents}/${incidentId}/assign`)
+            .set("Cookie", admin.cookie)
+            .send({ userId: responder.userId });
+
+        const after = await request(app)
+            .get(`${API.incidents}/${incidentId}/assignees`)
+            .set("Cookie", admin.cookie);
+
+        expect(after.body.data.assigned.map((member: any) => member.id)).toContain(
+            responder.userId
+        );
+        expect(after.body.data.available.map((member: any) => member.id)).not.toContain(
+            responder.userId
+        );
+    });
+
+    it("does not expose the directory to viewers", async () => {
+        expectForbidden(
+            await request(app)
+                .get(`${API.incidents}/${incidentId}/assignees`)
+                .set("Cookie", viewer.cookie)
+        );
+    });
+});
+
 describe("responder: can respond, cannot manage", () => {
     it("can create an incident and change its status", async () => {
         const created = await request(app)

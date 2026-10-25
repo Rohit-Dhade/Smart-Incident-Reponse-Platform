@@ -59,6 +59,19 @@ export interface Service {
   updatedAt: string;
 }
 
+export interface AssignmentMember {
+  id: string;
+  name: string;
+  email: string;
+  role: Role;
+}
+
+export interface IncidentAssignees {
+  canAssign: boolean;
+  assigned: AssignmentMember[];
+  available: AssignmentMember[];
+}
+
 export interface IncidentUpdate {
   id: string;
   type: UpdateType;

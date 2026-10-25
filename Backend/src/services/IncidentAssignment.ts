@@ -107,5 +107,71 @@ async function changeAssignment(
     }
 }
 
+export interface AssignmentMember {
+    id: string;
+    name: string;
+    email: string;
+    role: Role;
+}
+
+export interface IncidentAssignees {
+    canAssign: boolean;
+    assigned: AssignmentMember[];
+    available: AssignmentMember[];
+}
+
+export async function getIncidentAssignees({
+    incidentId,
+    organizationId,
+}: {
+    incidentId: string;
+    organizationId: string;
+}): Promise<IncidentAssignees> {
+    if (!mongoose.isValidObjectId(incidentId)) {
+        throw new ApiError(404, "Incident not found");
+    }
+
+    const incident = await IncidentModel.findOne({ _id: incidentId, organizationId })
+        .select("assignedTo status")
+        .lean();
+
+    if (!incident) {
+        throw new ApiError(404, "Incident not found");
+    }
+
+    const memberships = await MemberShipModel.find({ organizationId }).lean();
+    const users = await UserModel.find({ _id: { $in: memberships.map((member) => member.userId) } })
+        .select("name email")
+        .lean();
+
+    const usersById = new Map(users.map((user) => [String(user._id), user]));
+    const assignedIds = new Set(incident.assignedTo.map(String));
+
+    const members: AssignmentMember[] = memberships.flatMap((membership) => {
+        const user = usersById.get(String(membership.userId));
+        if (!user) return [];
+
+        return [
+            {
+                id: String(user._id),
+                name: user.name,
+                email: user.email,
+                role: membership.role,
+            },
+        ];
+    });
+
+    members.sort((left, right) => left.name.localeCompare(right.name));
+
+    return {
+        canAssign: incident.status !== "resolved",
+        assigned: members.filter((member) => assignedIds.has(member.id)),
+        available: members.filter(
+            (member) =>
+                !assignedIds.has(member.id) && ASSIGNABLE_ROLES.includes(member.role)
+        ),
+    };
+}
+
 export const assignResponder = (input: AssignmentInput) => changeAssignment(input, "assign");
 export const unassignResponder = (input: AssignmentInput) => changeAssignment(input, "unassign");

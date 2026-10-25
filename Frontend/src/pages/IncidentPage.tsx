@@ -7,6 +7,7 @@ import {
 import { Link, useParams } from "react-router-dom";
 import { api, ApiError, isAbortError } from "../api";
 import { AppHeader } from "../components/AppHeader";
+import { AssignmentPanel } from "../components/AssignmentPanel";
 import { EmptyState, Notice } from "../components/Feedback";
 import {
   ArrowLeftIcon,
@@ -490,6 +491,11 @@ export function IncidentPage() {
 
             {canAct ? (
               <>
+                <AssignmentPanel
+                  incident={incident}
+                  onUpdated={handleIncidentUpdated}
+                  onNotice={setNotice}
+                />
                 <StatusUpdatePanel
                   incident={incident}
                   onUpdated={handleIncidentUpdated}

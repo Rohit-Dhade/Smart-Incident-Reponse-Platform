@@ -866,6 +866,86 @@
   color: var(--dp-color-ink-secondary);
 }
 
+/* -------------------------------- Assignment -------------------------------- */
+.assignee-list {
+  display: grid;
+  margin: 0 0 14px;
+  padding: 0;
+  list-style: none;
+}
+
+.assignee {
+  display: grid;
+  grid-template-columns: 30px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--dp-color-rule);
+}
+
+.assignee:first-child {
+  padding-top: 0;
+}
+
+.assignee:last-child {
+  padding-bottom: 0;
+  border-bottom: 0;
+}
+
+.assignee__avatar {
+  width: 30px;
+  height: 30px;
+  font-size: 10px;
+}
+
+.assignee__body {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  line-height: 1.35;
+}
+
+.assignee__name {
+  color: var(--dp-color-ink);
+  font-size: 12.5px;
+  font-weight: 600;
+}
+
+.assignee__meta {
+  color: var(--dp-color-ink-secondary);
+  font-size: 11px;
+  overflow-wrap: anywhere;
+}
+
+.assignee__remove {
+  margin-right: -8px;
+  padding-inline: 8px;
+  font-size: 11.5px;
+}
+
+.assignment-loading,
+.assignment-empty,
+.assignment-note {
+  margin: 0;
+  color: var(--dp-color-ink-secondary);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.assignment-form {
+  display: grid;
+  gap: 12px;
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid var(--dp-color-rule);
+}
+
+.assignment-note {
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid var(--dp-color-rule);
+}
+
 /* -------------------------------- Postmortem -------------------------------- */
 .postmortem__heading {
   display: flex;
@@ -971,10 +1051,44 @@
   color: var(--status-operational);
 }
 
+.postmortem__edit {
+  padding-top: 18px;
+}
+
+.postmortem__edit-note {
+  padding: 11px 12px;
+  border: 1px solid var(--dp-color-rule);
+  border-radius: 8px;
+  background: var(--dp-color-ground-muted);
+  color: var(--dp-color-ink-secondary);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.postmortem__edit .textarea {
+  min-height: 88px;
+}
+
+.postmortem__edit-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px;
+  padding-top: 4px;
+}
+
 .postmortem__actions {
   margin-top: 22px;
   padding-top: 16px;
   border-top: 1px solid var(--dp-color-rule);
+}
+
+.postmortem__action-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
 }
 
 .confirm-bar {
@@ -1253,6 +1367,28 @@
     align-items: flex-start;
     flex-direction: column;
     gap: 10px;
+  }
+
+  .postmortem__action-row,
+  .postmortem__edit-actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .postmortem__action-row .btn,
+  .postmortem__edit-actions .btn {
+    width: 100%;
+  }
+
+  .assignee {
+    grid-template-columns: 30px minmax(0, 1fr);
+  }
+
+  .assignee__remove {
+    grid-column: 2;
+    justify-self: start;
+    margin: 2px 0 0;
+    padding-inline: 0;
   }
 
   .timeline-panel__tools {

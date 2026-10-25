@@ -13,11 +13,12 @@ Socket.IO.
 | `/register` | Signed out | Create an organization and an admin account |
 | `/login` | Signed out | Sign in to an existing workspace |
 | `/dashboard` | Signed in | Incident overview, filters, services, and response actions |
-| `/incidents/:id` | Signed in | Timeline, status transitions, updates, and postmortems |
+| `/incidents/:id` | Signed in | Timeline, status transitions, responder assignments, updates, and postmortems |
 
-Admins and responders can manage incidents. Only admins can add services,
-change service state through incident resolution, and publish postmortems.
-Viewers have read-only access.
+Admins and responders can manage incidents, assign or unassign responders, and
+edit draft postmortems. Only admins can add services, change service state
+through incident resolution, and publish postmortems. Viewers have read-only
+access.
 
 ## Local development
 
@@ -85,3 +86,8 @@ services, incidents, timeline updates, and postmortems. The session endpoints
 `GET /api/v1/auth/me` and `POST /api/v1/auth/logout`, and the incident timeline
 endpoint `GET /api/v1/incidents/:id/updates`, are required for session
 hydration, sign-out, and incident detail views.
+
+Responder assignment uses `GET /api/v1/incidents/:id/assignees` (the
+organization's assignable members), `POST /api/v1/incidents/:id/assign`, and
+`DELETE /api/v1/incidents/:id/assign/:userId`. Draft postmortems are saved with
+`PATCH /api/v1/incidents/:id/postmortem`.
