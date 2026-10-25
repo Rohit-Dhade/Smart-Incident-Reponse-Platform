@@ -2,7 +2,10 @@ import { describe, it, expect, beforeAll, afterAll, beforeEach, vi } from "vites
 import request from "supertest";
 
 const { create } = vi.hoisted(() => ({ create: vi.fn() }));
-vi.mock("@mistralai/mistralai-sdk", () => ({
+vi.mock("@mistralai/mistralai", () => ({
+    Mistral: class {
+        messages = { create };
+    },
     default: class {
         messages = { create };
     },

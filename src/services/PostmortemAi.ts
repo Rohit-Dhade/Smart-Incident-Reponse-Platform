@@ -1,5 +1,5 @@
 
-import MistralClient from "@mistralai/mistralai-sdk";
+import { Mistral as MistralClient } from "@mistralai/mistralai";
 import { ApiError } from "./ApiError.ts";
 
 export interface PostmortemSections {
@@ -73,7 +73,7 @@ export async function generatePostmortemSections(
     const model =
         process.env.MISTRAL_MODEL ?? "mistral-medium-latest";
 
-    const client = new MistralClient({
+    const client: any = new MistralClient({
         apiKey: process.env.MISTRAL_API_KEY ?? "",
     });
 
