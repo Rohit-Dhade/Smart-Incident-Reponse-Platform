@@ -4,13 +4,14 @@ import { register } from "../controllers/register.ts";
 import { registerValidator } from "../validation/AuthValidators.ts";
 import { login } from "../controllers/login.ts";
 import { loginValidator } from "../validation/AuthValidators.ts";
-import { logout, me } from "../controllers/session.ts";
+import { logoutHandler } from "../controllers/session.controller.ts";
+import { meHandler } from "../controllers/session.controller.ts";
 
 const router = Router();
 
 router.post("/register", registerValidator, register);
 router.post("/login", loginValidator, login);
-router.get("/me", authMiddleware, me);
-router.post("/logout", logout);
+router.get("/me", authMiddleware, meHandler);
+router.post("/logout", logoutHandler);
 
 export default router;
