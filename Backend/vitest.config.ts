@@ -8,8 +8,23 @@ export default defineConfig({
             MISTRAL_API_KEY: "test-key",
             CLIENT_URL: "http://localhost:5173",
         },
-        fileParallelism: false, 
-        hookTimeout: 300_000, 
+        fileParallelism: false,
+        hookTimeout: 300_000,
         testTimeout: 30_000,
+    },
+    server: {
+        proxy: {
+            "/api": {
+                target: "http://localhost:5000",
+                changeOrigin: true,
+                secure: false,
+            },
+            "/socket.io": {
+                target: "http://localhost:5000",
+                changeOrigin: true,
+                secure: false,
+                ws: true
+            }
+        },
     },
 });
