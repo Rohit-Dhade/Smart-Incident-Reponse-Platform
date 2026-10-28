@@ -7,6 +7,8 @@ import requiredRoleRouter from './routes/requiredRole.Route.ts';
 import incidentRouter from "./routes/Incident.Routes.ts";
 import ServiceRouter from "./routes/Service.Routes.ts";
 import statusRouter from "./routes/Status.Routes.ts";
+import invitationRouter from './routes/Invitation.Routes.ts';
+import memberRouter from './routes/Members.Route.ts';
 
 const app = express();
 app.use(express.json({ limit: "10kb" }));
@@ -18,6 +20,8 @@ app.use("/api/v1/auth", registerRouter);
 app.use("/api/v1/incidents", incidentRouter);
 app.use("/api/v1/services", ServiceRouter);
 app.use("/api/v1/status", statusRouter);
+app.use("/api/v1/invitations", invitationRouter);
+app.use("/api/v1/members", memberRouter);
 
 
 app.use(errorHandler);
