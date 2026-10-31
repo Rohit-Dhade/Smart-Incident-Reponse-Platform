@@ -87,6 +87,11 @@
   font-size: 11px;
 }
 
+.app-header__team-link.is-active {
+  background: var(--dp-color-ground-muted);
+  color: var(--dp-color-ink);
+}
+
 /* --------------------------------- Dashboard ------------------------------- */
 .dashboard {
   padding: 40px 0 80px;
@@ -498,6 +503,267 @@
   flex: 0 0 auto;
   margin-top: 2px;
   color: #a44a09;
+}
+
+/* ----------------------------------- Team ---------------------------------- */
+.team-page {
+  padding: 40px 0 80px;
+}
+
+.team-page > .notice {
+  margin-top: 20px;
+}
+
+.team-page > .notice + .notice {
+  margin-top: 10px;
+}
+
+.invite-banner {
+  margin-top: 24px;
+  padding: 20px 22px;
+  border: 1px solid var(--dp-color-accent-border);
+  border-radius: var(--dp-radius-panel);
+  background: var(--dp-color-accent-soft);
+}
+
+.invite-banner__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.invite-banner__header .eyebrow {
+  margin-bottom: 7px;
+}
+
+.invite-banner__header h2 {
+  font-size: 19px;
+  letter-spacing: -0.025em;
+  line-height: 1.25;
+}
+
+.invite-banner__header p:not(.eyebrow) {
+  max-width: 72ch;
+  margin-top: 5px;
+  color: var(--dp-color-ink-secondary);
+  font-size: 12.5px;
+  line-height: 1.55;
+}
+
+.invite-banner__header .link-button {
+  flex: 0 0 auto;
+  font-size: 12px;
+}
+
+.invite-banner__link {
+  display: flex;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.invite-banner__input {
+  flex: 1;
+  min-width: 0;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 12px;
+  background: var(--dp-color-panel);
+}
+
+.invite-banner__error {
+  margin-top: 8px;
+  color: var(--status-down);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.team-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(320px, 0.85fr);
+  align-items: start;
+  gap: var(--dp-spacing-grid-gap);
+  margin-top: 30px;
+}
+
+.team-grid--single {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.team-panel {
+  min-width: 0;
+  overflow: hidden;
+}
+
+.team-panel__header {
+  align-items: center;
+}
+
+.team-panel__meta {
+  color: var(--dp-color-ink-secondary);
+  font-size: 12px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.team-panel__body {
+  padding: 0;
+}
+
+.team-loading {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 34px 24px;
+  color: var(--dp-color-ink-secondary);
+  font-size: 13px;
+}
+
+.team-loading .page-loader__spinner {
+  width: 18px;
+  height: 18px;
+}
+
+.team-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 34px 24px;
+  text-align: center;
+}
+
+.team-empty__icon {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  margin-bottom: 12px;
+  border: 1px solid var(--dp-color-accent-border);
+  border-radius: 10px;
+  background: var(--dp-color-accent-soft);
+  color: var(--dp-color-accent);
+}
+
+.team-empty h3 {
+  font-size: 17px;
+  letter-spacing: -0.02em;
+}
+
+.team-empty p {
+  max-width: 34ch;
+  margin-top: 5px;
+  color: var(--dp-color-ink-secondary);
+  font-size: 12.5px;
+  line-height: 1.55;
+}
+
+.team-empty .btn {
+  margin-top: 14px;
+}
+
+.team-member-list,
+.invite-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.team-member,
+.invite-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 24px;
+  border-top: 1px solid var(--dp-color-rule);
+}
+
+.team-member:first-child,
+.invite-row:first-child {
+  border-top: 0;
+}
+
+.team-member__avatar {
+  width: 36px;
+  height: 36px;
+  font-size: 11px;
+}
+
+.team-member__body,
+.invite-row__body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+  line-height: 1.35;
+}
+
+.team-member__name {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 7px;
+  color: var(--dp-color-ink);
+  font-size: 13.5px;
+  font-weight: 600;
+}
+
+.team-member__you {
+  padding: 1px 6px;
+  border-radius: 999px;
+  background: var(--dp-color-accent-soft);
+  color: var(--dp-color-accent);
+  font-size: 9.5px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.team-member__email,
+.invite-row__email {
+  color: var(--dp-color-ink);
+  font-size: 12px;
+  overflow-wrap: anywhere;
+}
+
+.team-member__email {
+  color: var(--dp-color-ink-secondary);
+}
+
+.invite-row__meta {
+  color: var(--dp-color-ink-secondary);
+  font-size: 11.5px;
+  overflow-wrap: anywhere;
+}
+
+.invite-row__revoke {
+  flex: 0 0 auto;
+  margin-right: -8px;
+  padding-inline: 8px;
+  font-size: 11.5px;
+}
+
+.pill--role-admin {
+  color: var(--dp-color-accent);
+  background: var(--dp-color-accent-soft);
+  border-color: var(--dp-color-accent-border);
+}
+
+.pill--role-responder {
+  color: #3d4757;
+  background: #eef1f5;
+  border-color: #dfe4eb;
+}
+
+.pill--role-viewer {
+  color: var(--dp-color-ink-secondary);
+  background: var(--dp-color-ground-muted);
+  border-color: var(--dp-color-rule);
+}
+
+.team-footnote {
+  margin-top: 20px;
+  color: var(--dp-color-ink-secondary);
+  font-size: 12px;
+  line-height: 1.5;
 }
 
 /* ------------------------------- Incident page ----------------------------- */
@@ -1128,7 +1394,8 @@
 
 @media (max-width: 980px) {
   .dashboard-grid,
-  .incident-layout {
+  .incident-layout,
+  .team-grid {
     grid-template-columns: minmax(0, 1fr);
   }
 
@@ -1167,11 +1434,13 @@
 }
 
 @media (max-width: 760px) {
-  .app-header__status-label {
+  .app-header__status-label,
+  .app-header__team-label {
     display: none;
   }
 
-  .app-header__status-link {
+  .app-header__status-link,
+  .app-header__team-link {
     padding-inline: 9px;
   }
 
@@ -1240,6 +1509,74 @@
 @media (max-width: 620px) {
   .dashboard {
     padding: 28px 0 60px;
+  }
+
+  .team-page {
+    padding: 28px 0 60px;
+  }
+
+  .invite-banner {
+    padding: 18px;
+  }
+
+  .invite-banner__header {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .invite-banner__link {
+    flex-direction: column;
+  }
+
+  .invite-banner__link .btn {
+    width: 100%;
+  }
+
+  .team-member,
+  .invite-row {
+    align-items: flex-start;
+    padding-inline: 18px;
+  }
+
+  .team-member {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    grid-template-areas:
+      "avatar body"
+      "avatar role";
+    align-items: center;
+    column-gap: 12px;
+    row-gap: 4px;
+  }
+
+  .team-member__avatar {
+    grid-area: avatar;
+  }
+
+  .team-member__body {
+    grid-area: body;
+  }
+
+  .team-member .pill {
+    grid-area: role;
+    justify-self: start;
+  }
+
+  .invite-row {
+    flex-wrap: wrap;
+  }
+
+  .invite-row__body {
+    flex-basis: 100%;
+  }
+
+  .invite-row__revoke {
+    margin-left: auto;
+  }
+
+  .team-loading,
+  .team-empty {
+    padding-inline: 18px;
   }
 
   .incident-page {

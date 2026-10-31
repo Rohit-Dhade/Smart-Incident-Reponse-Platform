@@ -12,13 +12,16 @@ Socket.IO.
 | `/status/:slug` | Public | Live service health, active incidents, and incident history |
 | `/register` | Signed out | Create an organization and an admin account |
 | `/login` | Signed out | Sign in to an existing workspace |
+| `/accept-invite` | Public | Join a workspace from an invitation link |
 | `/dashboard` | Signed in | Incident overview, filters, services, and response actions |
 | `/incidents/:id` | Signed in | Timeline, status transitions, responder assignments, updates, and postmortems |
+| `/team` | Signed in | Workspace directory and pending invitations |
 
 Admins and responders can manage incidents, assign or unassign responders, and
 edit draft postmortems. Only admins can add services, change service state
-through incident resolution, and publish postmortems. Viewers have read-only
-access.
+through incident resolution, publish postmortems, and invite or revoke
+teammates. Viewers have read-only access. All signed-in members can view the
+team directory.
 
 ## Local development
 
@@ -31,6 +34,9 @@ npm run dev
 
 Open `http://localhost:5173`. The Vite dev server proxies `/api` and
 `/socket.io` to the backend, so session cookies stay on the same origin.
+
+Set the backend's `CLIENT_URL` to `http://localhost:5173` so generated invite
+links point at this app's `/accept-invite` route.
 
 If the API or Socket.IO server lives elsewhere, create a `.env` file from
 `.env.example` and set `VITE_API_URL` and optionally `VITE_SOCKET_URL`.
@@ -72,7 +78,7 @@ src/
   auth/         session context and route guards
   components/   forms, dialogs, badges, timeline, postmortem, feedback
   hooks/        workspace data, public status, socket subscriptions, titles
-  pages/        home, public status, auth, dashboard, incident, 404
+  pages/        home, public status, auth, dashboard, incident, team, 404
   styles/       design tokens and page-level styles
   api.ts        fetch wrapper and typed errors
   socket.ts     Socket.IO client factory
@@ -91,3 +97,11 @@ Responder assignment uses `GET /api/v1/incidents/:id/assignees` (the
 organization's assignable members), `POST /api/v1/incidents/:id/assign`, and
 `DELETE /api/v1/incidents/:id/assign/:userId`. Draft postmortems are saved with
 `PATCH /api/v1/incidents/:id/postmortem`.
+
+Team management uses `GET /api/v1/members` for the workspace directory and
+`GET /api/v1/invitations` for pending invitations. Admins create invitations
+with `POST /api/v1/invitations`, revoke them with
+`DELETE /api/v1/invitations/:id`, and invitees join through
+`POST /api/v1/invitations/accept`. The create response includes the one-time
+`inviteLink`; the app shows it for copying because the backend does not send
+email.

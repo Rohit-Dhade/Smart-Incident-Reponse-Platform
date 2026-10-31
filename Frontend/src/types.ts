@@ -59,6 +59,29 @@ export interface Service {
   updatedAt: string;
 }
 
+export interface TeamMember {
+  userId: string;
+  name: string;
+  email: string;
+  role: Role;
+}
+
+export interface PendingInvitation {
+  _id: string;
+  email: string;
+  role: Role;
+  expiresAt: string;
+  createdAt: string;
+}
+
+export interface CreatedInvitation {
+  id: string;
+  email: string;
+  role: Role;
+  expiresAt: string;
+  inviteLink: string;
+}
+
 export interface AssignmentMember {
   id: string;
   name: string;

@@ -13,12 +13,14 @@ import { EmptyState } from "./components/Feedback";
 import { GlobeIcon } from "./components/Icons";
 import { SiteHeader } from "./components/SiteHeader";
 import { usePageTitle } from "./hooks/usePageTitle";
+import { AcceptInvitePage } from "./pages/AcceptInvitePage";
 import { DashboardPage } from "./pages/DashboardPage";
 import { HomePage } from "./pages/HomePage";
 import { IncidentPage } from "./pages/IncidentPage";
 import { LoginPage } from "./pages/LoginPage";
 import { PublicStatusPage } from "./pages/PublicStatusPage";
 import { RegisterPage } from "./pages/RegisterPage";
+import { TeamPage } from "./pages/TeamPage";
 
 function ScrollToTop() {
   const { pathname, hash } = useLocation();
@@ -78,6 +80,7 @@ export default function App() {
           <Route path="/" element={<HomePage />} />
           <Route path="/status/:slug" element={<PublicStatusPage />} />
           <Route path="/status" element={<Navigate to="/" replace />} />
+          <Route path="/accept-invite" element={<AcceptInvitePage />} />
 
           <Route element={<GuestOnly />}>
             <Route path="/login" element={<LoginPage />} />
@@ -88,6 +91,7 @@ export default function App() {
             <Route path="/dashboard" element={<DashboardPage />} />
             <Route path="/incidents/:id" element={<IncidentPage />} />
             <Route path="/incidents" element={<Navigate to="/dashboard" replace />} />
+            <Route path="/team" element={<TeamPage />} />
           </Route>
 
           <Route path="*" element={<NotFoundPage />} />

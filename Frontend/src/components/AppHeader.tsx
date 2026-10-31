@@ -1,15 +1,17 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../auth/AuthContext";
 import { ROLE_LABELS } from "../constants";
 import { getInitials } from "../format";
 import { Brand } from "./Brand";
-import { ExternalLinkIcon } from "./Icons";
+import { ExternalLinkIcon, UsersIcon } from "./Icons";
 
 export function AppHeader() {
   const { session, signOut } = useAuth();
   const navigate = useNavigate();
+  const { pathname } = useLocation();
   const [signingOut, setSigningOut] = useState(false);
+  const isTeamPage = pathname === "/team";
 
   if (!session) return null;
 
@@ -44,6 +46,18 @@ export function AppHeader() {
             <ExternalLinkIcon size={15} />
             <span className="app-header__status-label">Status page</span>
             <span className="sr-only"> (opens in a new tab)</span>
+          </Link>
+
+          <Link
+            className={`btn btn--quiet btn--sm app-header__team-link ${
+              isTeamPage ? "is-active" : ""
+            }`.trim()}
+            to="/team"
+            aria-label="Team"
+            aria-current={isTeamPage ? "page" : undefined}
+          >
+            <UsersIcon size={15} />
+            <span className="app-header__team-label">Team</span>
           </Link>
 
           <div className="user-chip">
