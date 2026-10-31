@@ -144,3 +144,27 @@ export async function acceptInvitation(input: { token: string; name?: string; pa
         await session.endSession();
     }
 }
+
+export async function resendInvitation(invitationId: string, organizationId: string) {
+    if (!mongoose.isValidObjectId(invitationId)) {
+        throw new ApiError(404, "Invitation not found");
+    }
+
+    const token = crypto.randomBytes(32).toString("hex");
+
+    const invitation = await InvitationModel.findOneAndUpdate(
+        { _id: invitationId, organizationId, status: "pending" },
+        {
+            $set: {
+                tokenHash: hashToken(token),
+                expiresAt: new Date(Date.now() + INVITE_DAYS * 24 * 60 * 60 * 1000),
+            },
+        },
+        { new: true }
+    );
+
+    if (!invitation) {
+        throw new ApiError(404, "Invitation not found");
+    }
+    return { invitation, token };
+}

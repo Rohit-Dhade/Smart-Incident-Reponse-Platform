@@ -148,21 +148,24 @@
 
 .auth-feature-list li {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   gap: 14px;
   padding: 18px 0;
   border-bottom: 1px solid rgba(252, 252, 253, 0.15);
 }
 
 .auth-feature-list__icon {
-  display: grid;
-  place-items: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  align-self: center;
   width: 36px;
   height: 36px;
-  flex: 0 0 auto;
   border: 1px solid rgba(252, 252, 253, 0.18);
   border-radius: 9px;
   color: var(--dp-color-on-field);
+  flex-shrink: 0;
+  margin-top: 0;
 }
 
 .auth-feature-list strong {
@@ -173,7 +176,7 @@
   line-height: 1.4;
 }
 
-.auth-feature-list span {
+.auth-feature-list li > div > span {
   display: block;
   margin-top: 3px;
   color: var(--dp-color-on-field-secondary);

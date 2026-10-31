@@ -4,31 +4,11 @@ import {
     listInvitations,
     revokeInvitation,
     acceptInvitation,
+    resendInvitation
 } from "../services/Invitations.ts";
+import { emailInvitation } from "../services/InvitationMail.ts";
 import { listMembers } from "../services/Members.ts";
 import { setAuthCookie } from "../utils/authCookie.ts";
-
-export async function inviteHandler(req: Request, res: Response) {
-    const { invitation, token } = await createInvitation({
-        email: req.body.email,
-        role: req.body.role,
-        organizationId: req.user!.organizationId,
-        invitedBy: req.user!.id,
-    });
-
-    const inviteLink = `${process.env.CLIENT_URL}/accept-invite?token=${token}`;
-
-    return res.status(201).json({
-        success: true,
-        data: {
-            id: invitation._id,
-            email: invitation.email,
-            role: invitation.role,
-            expiresAt: invitation.expiresAt,
-            inviteLink,
-        },
-    });
-}
 
 export async function listInvitationsHandler(req: Request, res: Response) {
     const data = await listInvitations(req.user!.organizationId);
@@ -63,4 +43,38 @@ export async function acceptInvitationHandler(req: Request, res: Response) {
 export async function listMembersHandler(req: Request, res: Response) {
     const data = await listMembers(req.user!.organizationId);
     return res.status(200).json({ success: true, data });
+}
+
+
+export async function inviteHandler(req: Request, res: Response) {
+    const { invitation, token } = await createInvitation({
+        email: req.body.email,
+        role: req.body.role,
+        organizationId: req.user!.organizationId,
+        invitedBy: req.user!.id,
+    });
+
+    const { emailSent, inviteLink } = await emailInvitation(invitation, token, req.user!.id);
+
+    return res.status(201).json({
+        success: true,
+        data: {
+            id: invitation._id,
+            email: invitation.email,
+            role: invitation.role,
+            expiresAt: invitation.expiresAt,
+            email_sent: emailSent,
+            invite_link: inviteLink,
+        },
+    });
+}
+
+export async function resendHandler(req: Request, res: Response) {
+    const { invitation, token } = await resendInvitation(req.params.id as string, req.user!.organizationId);
+    const { emailSent, inviteLink } = await emailInvitation(invitation, token, req.user!.id);
+
+    return res.status(200).json({
+        success: true,
+        data: { id: invitation._id, email: invitation.email, expiresAt: invitation.expiresAt, emailSent, inviteLink },
+    });
 }

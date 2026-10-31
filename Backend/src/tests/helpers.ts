@@ -13,6 +13,7 @@ export const API = {
     incidents: "/api/v1/incidents",
     status: "/api/v1/status",
     login: "/api/v1/auth/login",
+    invitations: "/api/v1/invitations",
 };
 
 let replSet: MongoMemoryReplSet | undefined;
@@ -97,7 +98,7 @@ export async function addMember(company: Company, role: Role, email: string): Pr
     const user = await UserModel.create({
         name: `Test ${role}`,
         email,
-        passwordhash: "password123", 
+        passwordhash: "password123",
     });
     await MemberShipModel.create({
         userId: user._id,
