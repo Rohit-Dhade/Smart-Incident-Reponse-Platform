@@ -23,6 +23,10 @@ export class ApiError extends Error {
 
 export const UNAUTHORIZED_EVENT = "statusdesk:unauthorized";
 
+export interface UnauthorizedEventDetail {
+  message?: string;
+}
+
 export async function request<T>(
   path: string,
   init: RequestInit = {},
@@ -62,12 +66,17 @@ export async function request<T>(
 
   if (!response.ok) {
     if (response.status === 401 && !options.suppressAuthEvent) {
-      window.dispatchEvent(new Event(UNAUTHORIZED_EVENT));
+      window.dispatchEvent(
+        new CustomEvent<UnauthorizedEventDetail>(UNAUTHORIZED_EVENT, {
+          detail: { message: payload.message },
+        }),
+      );
     }
-    throw new ApiError(
-      payload.message ?? `Request failed (${response.status})`,
-      response.status,
-    );
+    const fallbackMessage =
+      response.status === 429
+        ? "Too many attempts. Please wait a few minutes and try again."
+        : `Request failed (${response.status})`;
+    throw new ApiError(payload.message ?? fallbackMessage, response.status);
   }
 
   return payload;

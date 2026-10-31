@@ -15,11 +15,13 @@ import { SiteHeader } from "./components/SiteHeader";
 import { usePageTitle } from "./hooks/usePageTitle";
 import { AcceptInvitePage } from "./pages/AcceptInvitePage";
 import { DashboardPage } from "./pages/DashboardPage";
+import { ForgotPasswordPage } from "./pages/ForgotPasswordPage";
 import { HomePage } from "./pages/HomePage";
 import { IncidentPage } from "./pages/IncidentPage";
 import { LoginPage } from "./pages/LoginPage";
 import { PublicStatusPage } from "./pages/PublicStatusPage";
 import { RegisterPage } from "./pages/RegisterPage";
+import { ResetPasswordPage } from "./pages/ResetPasswordPage";
 import { TeamPage } from "./pages/TeamPage";
 
 function ScrollToTop() {
@@ -81,6 +83,8 @@ export default function App() {
           <Route path="/status/:slug" element={<PublicStatusPage />} />
           <Route path="/status" element={<Navigate to="/" replace />} />
           <Route path="/accept-invite" element={<AcceptInvitePage />} />
+          <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+          <Route path="/reset-password" element={<ResetPasswordPage />} />
 
           <Route element={<GuestOnly />}>
             <Route path="/login" element={<LoginPage />} />

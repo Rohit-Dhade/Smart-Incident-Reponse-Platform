@@ -12,6 +12,8 @@ Socket.IO.
 | `/status/:slug` | Public | Live service health, active incidents, and incident history |
 | `/register` | Signed out | Create an organization and an admin account |
 | `/login` | Signed out | Sign in to an existing workspace |
+| `/forgot-password` | Public | Request a password reset link by email |
+| `/reset-password` | Public | Choose a new password from an emailed reset link |
 | `/accept-invite` | Public | Join a workspace from an invitation link |
 | `/dashboard` | Signed in | Incident overview, filters, services, and response actions |
 | `/incidents/:id` | Signed in | Timeline, status transitions, responder assignments, updates, and postmortems |
@@ -36,7 +38,10 @@ Open `http://localhost:5173`. The Vite dev server proxies `/api` and
 `/socket.io` to the backend, so session cookies stay on the same origin.
 
 Set the backend's `CLIENT_URL` to `http://localhost:5173` so generated invite
-links point at this app's `/accept-invite` route.
+and password-reset links point at this app's `/accept-invite` and
+`/reset-password` routes. Configure `SMTP_*` on the backend to send invitation
+and reset emails; when email is unavailable, the team page still shows the
+one-time invitation link for copying.
 
 If the API or Socket.IO server lives elsewhere, create a `.env` file from
 `.env.example` and set `VITE_API_URL` and optionally `VITE_SOCKET_URL`.
@@ -81,6 +86,7 @@ src/
   pages/        home, public status, auth, dashboard, incident, team, 404
   styles/       design tokens and page-level styles
   api.ts        fetch wrapper and typed errors
+  invitations.ts invitation response normalization
   socket.ts     Socket.IO client factory
   types.ts      API and domain types
 ```
@@ -89,9 +95,11 @@ src/
 
 The client uses the existing multi-tenant REST API for organizations,
 services, incidents, timeline updates, and postmortems. The session endpoints
-`GET /api/v1/auth/me` and `POST /api/v1/auth/logout`, and the incident timeline
-endpoint `GET /api/v1/incidents/:id/updates`, are required for session
-hydration, sign-out, and incident detail views.
+`GET /api/v1/auth/me` and `POST /api/v1/auth/logout`, the password-reset
+endpoints `POST /api/v1/auth/forgot-password` and
+`POST /api/v1/auth/reset-password`, and the incident timeline endpoint
+`GET /api/v1/incidents/:id/updates`, are required for session hydration,
+sign-out, password recovery, and incident detail views.
 
 Responder assignment uses `GET /api/v1/incidents/:id/assignees` (the
 organization's assignable members), `POST /api/v1/incidents/:id/assign`, and
@@ -100,8 +108,9 @@ organization's assignable members), `POST /api/v1/incidents/:id/assign`, and
 
 Team management uses `GET /api/v1/members` for the workspace directory and
 `GET /api/v1/invitations` for pending invitations. Admins create invitations
-with `POST /api/v1/invitations`, revoke them with
+with `POST /api/v1/invitations`, resend them with
+`POST /api/v1/invitations/:id/resend`, revoke them with
 `DELETE /api/v1/invitations/:id`, and invitees join through
-`POST /api/v1/invitations/accept`. The create response includes the one-time
-`inviteLink`; the app shows it for copying because the backend does not send
-email.
+`POST /api/v1/invitations/accept`. Create and resend responses include the
+one-time invite link plus an `emailSent`/`email_sent` flag; the app shows the
+link for copying when email delivery is unavailable.

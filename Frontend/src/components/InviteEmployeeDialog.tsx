@@ -6,6 +6,10 @@ import {
 } from "react";
 import { api } from "../api";
 import { ROLE_LABELS } from "../constants";
+import {
+  normalizeCreatedInvitation,
+  type CreatedInvitationResponse,
+} from "../invitations";
 import type { CreatedInvitation, Role } from "../types";
 import { Dialog } from "./Dialog";
 import { Notice } from "./Feedback";
@@ -63,16 +67,19 @@ export function InviteEmployeeDialog({
 
     setSubmitting(true);
     try {
-      const invitation = await api<CreatedInvitation>("/api/v1/invitations", {
-        method: "POST",
-        body: JSON.stringify({ email: email.trim(), role }),
-      });
-      onCreated(invitation);
+      const invitation = await api<CreatedInvitationResponse>(
+        "/api/v1/invitations",
+        {
+          method: "POST",
+          body: JSON.stringify({ email: email.trim(), role }),
+        },
+      );
+      onCreated(normalizeCreatedInvitation(invitation));
     } catch (error) {
       setServerError(
         error instanceof Error
           ? error.message
-          : "Unable to create the invitation.",
+          : "Unable to send the invitation.",
       );
     } finally {
       setSubmitting(false);
@@ -94,7 +101,7 @@ export function InviteEmployeeDialog({
       open={open}
       onClose={onClose}
       title="Invite an employee"
-      description="Create a one-time link that lets a teammate join your workspace with the role you choose."
+      description="We'll email a one-time link that lets a teammate join your workspace with the role you choose."
     >
       <form
         className="form-stack"
@@ -149,7 +156,7 @@ export function InviteEmployeeDialog({
             className="btn btn--primary"
             disabled={submitting}
           >
-            {submitting ? "Creating invitation…" : "Create invitation"}
+            {submitting ? "Sending invitation…" : "Send invitation"}
           </button>
         </div>
       </form>

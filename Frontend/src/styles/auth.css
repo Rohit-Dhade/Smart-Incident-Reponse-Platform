@@ -75,6 +75,17 @@
   font-weight: 600;
 }
 
+.auth-form__forgot {
+  margin-top: 14px;
+  color: var(--dp-color-ink-secondary);
+  font-size: 12.5px;
+  text-align: right;
+}
+
+.auth-form__forgot a {
+  font-weight: 600;
+}
+
 .auth-actions {
   display: flex;
   flex-wrap: wrap;

@@ -79,6 +79,15 @@ export interface CreatedInvitation {
   email: string;
   role: Role;
   expiresAt: string;
+  emailSent: boolean;
+  inviteLink: string;
+}
+
+export interface ResendInvitationResult {
+  id: string;
+  email: string;
+  expiresAt: string;
+  emailSent: boolean;
   inviteLink: string;
 }
 

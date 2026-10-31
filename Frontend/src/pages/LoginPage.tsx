@@ -12,7 +12,7 @@ const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export function LoginPage() {
   usePageTitle("Sign in");
-  const { refresh } = useAuth();
+  const { refresh, sessionNotice, clearSessionNotice } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const [email, setEmail] = useState("");
@@ -21,8 +21,13 @@ export function LoginPage() {
   const [serverError, setServerError] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
-  const fromState = (location.state as { from?: string } | null)?.from;
+  const locationState = location.state as {
+    from?: string;
+    notice?: string;
+  } | null;
+  const fromState = locationState?.from;
   const redirectTo = fromState?.startsWith("/") ? fromState : "/dashboard";
+  const [resetNotice, setResetNotice] = useState(locationState?.notice ?? "");
 
   const validate = () => {
     const errors: Record<string, string> = {};
@@ -55,10 +60,14 @@ export function LoginPage() {
 
     setSubmitting(true);
     try {
-      await request<never>("/api/v1/auth/login", {
-        method: "POST",
-        body: JSON.stringify({ email: email.trim(), password }),
-      });
+      await request<never>(
+        "/api/v1/auth/login",
+        {
+          method: "POST",
+          body: JSON.stringify({ email: email.trim(), password }),
+        },
+        { suppressAuthEvent: true },
+      );
       const session = await refresh();
       if (!session) {
         setServerError(
@@ -66,6 +75,7 @@ export function LoginPage() {
         );
         return;
       }
+      clearSessionNotice();
       navigate(redirectTo, { replace: true });
     } catch (error) {
       setServerError(
@@ -96,6 +106,18 @@ export function LoginPage() {
         <p className="auth-form__lede">
           Sign in to your incident workspace and status page.
         </p>
+
+        {resetNotice ? (
+          <Notice tone="success" onDismiss={() => setResetNotice("")}>
+            {resetNotice}
+          </Notice>
+        ) : null}
+
+        {sessionNotice ? (
+          <Notice tone="info" onDismiss={clearSessionNotice}>
+            {sessionNotice}
+          </Notice>
+        ) : null}
 
         {serverError ? (
           <Notice tone="error" onDismiss={() => setServerError("")}>
@@ -139,6 +161,10 @@ export function LoginPage() {
             {!submitting ? <ArrowRightIcon size={17} /> : null}
           </button>
         </form>
+
+        <p className="auth-form__forgot">
+          <Link to="/forgot-password">Forgot your password?</Link>
+        </p>
 
         <p className="auth-form__switch">
           New to StatusDesk? <Link to="/register">Create an account</Link>

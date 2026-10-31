@@ -13,6 +13,10 @@ import {
 import { ROLE_LABELS } from "../constants";
 import { formatDateTime, getInitials, pluralize } from "../format";
 import { usePageTitle } from "../hooks/usePageTitle";
+import {
+  normalizeResendInvitation,
+  type ResendInvitationResponse,
+} from "../invitations";
 import type {
   CreatedInvitation,
   PendingInvitation,
@@ -34,6 +38,7 @@ export function TeamPage() {
     null,
   );
   const [revokingId, setRevokingId] = useState("");
+  const [resendingId, setResendingId] = useState("");
   const [copied, setCopied] = useState(false);
   const [copyError, setCopyError] = useState("");
   const inviteInputRef = useRef<HTMLInputElement>(null);
@@ -138,6 +143,9 @@ export function TeamPage() {
       setInvitations((current) =>
         current.filter((item) => item._id !== invitation._id),
       );
+      if (latestInvite?.id === invitation._id) {
+        setLatestInvite(null);
+      }
       setNotice(`Invitation for ${invitation.email} revoked.`);
     } catch (cause) {
       setError(
@@ -147,6 +155,50 @@ export function TeamPage() {
       );
     } finally {
       setRevokingId("");
+    }
+  };
+
+  const handleResend = async (invitation: PendingInvitation) => {
+    setError("");
+    setNotice("");
+    setResendingId(invitation._id);
+    try {
+      const response = await api<ResendInvitationResponse>(
+        `/api/v1/invitations/${invitation._id}/resend`,
+        { method: "POST" },
+      );
+      const resent = normalizeResendInvitation(response);
+
+      setInvitations((current) =>
+        current.map((item) =>
+          item._id === invitation._id
+            ? { ...item, expiresAt: resent.expiresAt }
+            : item,
+        ),
+      );
+
+      if (resent.emailSent) {
+        setNotice(`Invitation email sent to ${invitation.email}.`);
+      } else {
+        setLatestInvite({
+          id: resent.id,
+          email: resent.email,
+          role: invitation.role,
+          expiresAt: resent.expiresAt,
+          emailSent: false,
+          inviteLink: resent.inviteLink,
+        });
+        setCopied(false);
+        setCopyError("");
+      }
+    } catch (cause) {
+      setError(
+        cause instanceof Error
+          ? cause.message
+          : "Unable to resend this invitation.",
+      );
+    } finally {
+      setResendingId("");
     }
   };
 
@@ -212,14 +264,20 @@ export function TeamPage() {
           >
             <div className="invite-banner__header">
               <div>
-                <p className="eyebrow">Invitation ready</p>
+                <p className="eyebrow">
+                  {latestInvite.emailSent
+                    ? "Invitation sent"
+                    : "Invitation ready"}
+                </p>
                 <h2 id="invite-banner-heading">
-                  Share this link with {latestInvite.email}
+                  {latestInvite.emailSent
+                    ? `Invitation sent to ${latestInvite.email}`
+                    : `Share this link with ${latestInvite.email}`}
                 </h2>
                 <p>
-                  Email delivery is not set up yet. Copy this one-time link and
-                  send it directly. It expires{" "}
-                  {formatDateTime(latestInvite.expiresAt)}.
+                  {latestInvite.emailSent
+                    ? `We emailed this invitation to ${latestInvite.email}. You can also copy the link below and share it directly. It expires ${formatDateTime(latestInvite.expiresAt)}.`
+                    : `We couldn't send the email automatically. Copy this one-time link and send it directly. It expires ${formatDateTime(latestInvite.expiresAt)}.`}
                 </p>
               </div>
               <button
@@ -381,17 +439,34 @@ export function TeamPage() {
                             {formatDateTime(invitation.expiresAt)}
                           </span>
                         </div>
-                        <button
-                          type="button"
-                          className="btn btn--quiet btn--sm invite-row__revoke"
-                          onClick={() => void handleRevoke(invitation)}
-                          disabled={Boolean(revokingId)}
-                          aria-label={`Revoke invitation for ${invitation.email}`}
-                        >
-                          {revokingId === invitation._id
-                            ? "Revoking…"
-                            : "Revoke"}
-                        </button>
+                        <div className="invite-row__actions">
+                          <button
+                            type="button"
+                            className="btn btn--quiet btn--sm"
+                            onClick={() => void handleResend(invitation)}
+                            disabled={
+                              Boolean(resendingId) || Boolean(revokingId)
+                            }
+                            aria-label={`Resend invitation email to ${invitation.email}`}
+                          >
+                            {resendingId === invitation._id
+                              ? "Sending…"
+                              : "Resend"}
+                          </button>
+                          <button
+                            type="button"
+                            className="btn btn--quiet btn--sm invite-row__revoke"
+                            onClick={() => void handleRevoke(invitation)}
+                            disabled={
+                              Boolean(resendingId) || Boolean(revokingId)
+                            }
+                            aria-label={`Revoke invitation for ${invitation.email}`}
+                          >
+                            {revokingId === invitation._id
+                              ? "Revoking…"
+                              : "Revoke"}
+                          </button>
+                        </div>
                       </li>
                     ))}
                   </ul>
@@ -403,7 +478,7 @@ export function TeamPage() {
 
         <p className="team-footnote">
           {isAdmin
-            ? "Invitations expire after seven days. Only admins can create or revoke them."
+            ? "Invitations expire after seven days. Only admins can create, resend, or revoke them."
             : "Only workspace admins can invite or revoke teammates."}
         </p>
       </main>
