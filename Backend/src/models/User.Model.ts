@@ -5,6 +5,7 @@ export interface IUser extends Document {
     name: string;
     email: string;
     passwordhash: string;
+    passwordChangedAt?: Date;
 }
 
 const UserSchema = new mongoose.Schema<IUser>({
@@ -22,6 +23,7 @@ const UserSchema = new mongoose.Schema<IUser>({
         required: true,
         select: false
     },
+    passwordChangedAt: { type: Date },
 }, { timestamps: true })
 
 UserSchema.pre("save", async function () {

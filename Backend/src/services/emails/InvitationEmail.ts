@@ -1,36 +1,28 @@
-const escapeHtml = (s: string) =>
-    s
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#39;");
-
-const oneLine = (s: string) => s.replace(/[\r\n]+/g, " ").trim();
+import { escapeHtml, oneLine } from "./escape.ts";
 
 interface InvitationEmailInput {
-    organizationName: string;
-    inviterName: string;
-    role: string;
-    link: string;
-    expiresAt: Date;
+  organizationName: string;
+  inviterName: string;
+  role: string;
+  link: string;
+  expiresAt: Date;
 }
 
 export function invitationEmail(input: InvitationEmailInput) {
-    const { organizationName, inviterName, role, link, expiresAt } = input;
-    const until = expiresAt.toISOString().slice(0, 10);
+  const { organizationName, inviterName, role, link, expiresAt } = input;
+  const until = expiresAt.toISOString().slice(0, 10);
 
-    const subject = oneLine(`${inviterName} invited you to join ${organizationName}`);
+  const subject = oneLine(`${inviterName} invited you to join ${organizationName}`);
 
-    const text = [
-        `${inviterName} invited you to join ${organizationName} as a ${role}.`,
-        ``,
-        `Accept the invitation: ${link}`,
-        ``,
-        `This link works until ${until} (UTC). If you weren't expecting this, you can ignore this email.`,
-    ].join("\n");
+  const text = [
+    `${inviterName} invited you to join ${organizationName} as a ${role}.`,
+    ``,
+    `Accept the invitation: ${link}`,
+    ``,
+    `This link works until ${until} (UTC). If you weren't expecting this, you can ignore this email.`,
+  ].join("\n");
 
-    const html = `
+  const html = `
 <div style="font-family: Arial, sans-serif; max-width: 480px; margin: 0 auto; color: #1f2937;">
   <h2 style="margin-bottom: 8px;">You're invited</h2>
   <p><strong>${escapeHtml(inviterName)}</strong> invited you to join
@@ -46,5 +38,5 @@ export function invitationEmail(input: InvitationEmailInput) {
   </p>
 </div>`;
 
-    return { subject, text, html };
+  return { subject, text, html };
 }
