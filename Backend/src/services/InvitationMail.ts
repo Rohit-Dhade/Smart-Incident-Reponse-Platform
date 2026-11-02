@@ -1,9 +1,9 @@
 import type { HydratedDocument } from "mongoose";
-import { OrganizationModel } from "../models/Organization.Model.js";
-import { UserModel } from "../models/User.Model.js";
-import type { IInvitation } from "../models/Invitation.Model.js";
-import { invitationEmail } from "../services/emails/InvitationEmail.js";
-import { sendMail } from "../services/mailer.js";
+import { OrganizationModel } from "../models/Organization.Model.ts";
+import { UserModel } from "../models/User.Model.ts";
+import type { IInvitation } from "../models/Invitation.Model.ts";
+import { invitationEmail } from "../services/emails/InvitationEmail.ts";
+import { sendMail } from "../services/mailer.ts";
 
 export async function emailInvitation(
     invitation: HydratedDocument<IInvitation>,

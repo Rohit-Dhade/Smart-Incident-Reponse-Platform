@@ -7,7 +7,8 @@
     "test_1": "node --experimental-vm-modules ./node_modules/jest/bin/jest.js",
     "dev": "tsx watch server.ts",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "start":"node server.ts"
   },
   "keywords": [],
   "author": "",

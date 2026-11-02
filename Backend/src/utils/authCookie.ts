@@ -4,7 +4,9 @@ import type { Role } from "../types/role.ts";
 
 const cookieOptions: CookieOptions = {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
+    secure: process.env.COOKIE_SECURE
+        ? process.env.COOKIE_SECURE === "true"
+        : process.env.NODE_ENV === "production",
     sameSite: "strict",
 };
 
