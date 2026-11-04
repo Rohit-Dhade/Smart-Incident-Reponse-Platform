@@ -11,6 +11,11 @@ export const testOutbox: MailMessage[] = [];
 
 let transporter: Transporter | undefined;
 
+function parseFrom(from: string) {
+    const match = from.match(/^\s*"?([^"<]*?)"?\s*<([^>]+)>\s*$/);
+    return match ? { name: match[1]!.trim() || undefined, email: match[2]!.trim() } : { email: from.trim() };
+}
+
 function getTransporter(): Transporter | null {
     if (!process.env.SMTP_HOST) return null;
 
@@ -46,6 +51,10 @@ export async function sendMail(message: MailMessage): Promise<boolean> {
         return true;
     }
 
+    if (process.env.BREVO_API_KEY) {
+        return sendViaBrevo(message);
+    }
+
     const transport = getTransporter();
     if (!transport) {
         if (process.env.NODE_ENV === "production") {
@@ -64,6 +73,35 @@ export async function sendMail(message: MailMessage): Promise<boolean> {
         return true;
     } catch (err) {
         console.error("Sending email failed:", err);
+        return false;
+    }
+}
+
+async function sendViaBrevo(message: MailMessage): Promise<boolean> {
+    try {
+        const res = await fetch("https://api.brevo.com/v3/smtp/email", {
+            method: "POST",
+            headers: {
+                accept: "application/json",
+                "content-type": "application/json",
+                "api-key": process.env.BREVO_API_KEY!,
+            },
+            body: JSON.stringify({
+                sender: parseFrom(process.env.MAIL_FROM ?? ""),
+                to: [{ email: message.to }],
+                subject: message.subject,
+                textContent: message.text,
+                htmlContent: message.html,
+            }),
+            signal: AbortSignal.timeout(10_000),
+        });
+        if (!res.ok) {
+            console.error("Brevo rejected the email:", res.status, await res.text());
+            return false;
+        }
+        return true;
+    } catch (err) {
+        console.error("Brevo request failed:", err);
         return false;
     }
 }

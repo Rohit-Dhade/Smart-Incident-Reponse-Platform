@@ -2,6 +2,7 @@ import cookieParser from 'cookie-parser';
 import 'dotenv/config';
 import express from 'express';
 import mongoose from 'mongoose';
+import path from "path";
 import { errorHandler } from './middleware/ErrorMiddleware.ts';
 import registerRouter from "./routes/Auth.Routes.ts";
 import incidentRouter from "./routes/Incident.Routes.ts";
@@ -27,6 +28,16 @@ app.use("/api/v1/services", ServiceRouter);
 app.use("/api/v1/status", statusRouter);
 app.use("/api/v1/invitations", invitationRouter);
 app.use("/api/v1/members", memberRouter);
+
+
+if (process.env.SERVE_CLIENT === "true") {
+    const clientDist = path.resolve(process.cwd(), "client-dist");
+    app.use(express.static(clientDist));
+
+    app.get(/^\/(?!api\/|socket\.io\/).*/, (_req, res) => {
+        res.sendFile(path.join(clientDist, "index.html"));
+    });
+}
 
 
 app.use(errorHandler);
