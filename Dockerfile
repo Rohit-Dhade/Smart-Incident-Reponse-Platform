@@ -10,7 +10,7 @@ WORKDIR /app
 COPY Backend/package*.json ./
 RUN npm ci
 COPY Backend/ ./
-COPY --from=client-build /client/dist ./client-dist
+COPY --from=Frontend-build /Frontend/dist ./Frontend-dist
 
 ENV NODE_ENV=production
 ENV SERVE_CLIENT=true
