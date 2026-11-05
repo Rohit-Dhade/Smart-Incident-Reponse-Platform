@@ -367,4 +367,3 @@ Browser -> Render (one Docker container: React build + API + Socket.io) -> Mongo
 
 Built by Rohit ([@Rohit-Dhade](https://github.com/Rohit-Dhade)) as an end-to-end project covering multi-tenant architecture, real-time systems, transactions, an AI-assisted workflow, testing, and deployment.
 
-`TODO: choose a license (for example MIT) and add a LICENSE file.`
