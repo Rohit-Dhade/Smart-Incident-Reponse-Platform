@@ -22,7 +22,7 @@ RUN npm ci
 COPY Backend/ ./
 
 # Copy frontend build output
-COPY --from=frontend-build /Frontend/dist ./Frontend-dist
+COPY --from=frontend-build /Frontend/dist ./client-dist
 
 ENV NODE_ENV=production
 ENV SERVE_CLIENT=true
