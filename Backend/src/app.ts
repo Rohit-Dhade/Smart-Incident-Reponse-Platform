@@ -1,5 +1,6 @@
 import cookieParser from 'cookie-parser';
 import 'dotenv/config';
+import fs from "fs";
 import express from 'express';
 import mongoose from 'mongoose';
 import path from "path";
@@ -32,11 +33,17 @@ app.use("/api/v1/members", memberRouter);
 
 if (process.env.SERVE_CLIENT === "true") {
     const clientDist = path.resolve(process.cwd(), "client-dist");
+    const indexFile = path.join(clientDist, "index.html");
+    console.log(`Serving the frontend from ${clientDist} (index.html found: ${fs.existsSync(indexFile)})`);
+
     app.use(express.static(clientDist));
 
+    // any address that isn't the API or the socket line is a page of the React app
     app.get(/^\/(?!api\/|socket\.io\/).*/, (_req, res) => {
-        res.sendFile(path.join(clientDist, "index.html"));
+        res.sendFile(indexFile);
     });
+} else {
+    console.log("Not serving the frontend (SERVE_CLIENT is not true)");
 }
 
 
